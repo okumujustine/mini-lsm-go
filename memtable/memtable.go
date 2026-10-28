@@ -23,7 +23,7 @@ func (m *MemTable) Put(key string, value []byte) ([]byte, bool) {
 	cloneValue := bytes.Clone(value)
 	m.data[key] = cloneValue
 
-	return cloneValue, true
+	return bytes.Clone(cloneValue), true
 }
 
 func (m *MemTable) Get(key string) ([]byte, bool) {
