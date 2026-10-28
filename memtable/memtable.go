@@ -17,7 +17,7 @@ func New() *MemTable {
 
 func (m *MemTable) Put(key string, value []byte) ([]byte, bool) {
 
-	if len(strings.TrimSpace(key)) == 0 || len(value) == 0 {
+	if len(strings.TrimSpace(key)) == 0 {
 		return nil, false
 	}
 	cloneValue := bytes.Clone(value)
@@ -31,8 +31,11 @@ func (m *MemTable) Get(key string) ([]byte, bool) {
 		return nil, false
 	}
 	val, ok := m.data[key]
-
 	if !ok {
+		return nil, false
+	}
+
+	if len(val) == 0 {
 		return nil, false
 	}
 	return bytes.Clone(val), true
