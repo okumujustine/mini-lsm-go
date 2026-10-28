@@ -20,8 +20,10 @@ func (m *MemTable) Put(key string, value []byte) ([]byte, bool) {
 	if len(strings.TrimSpace(key)) == 0 || len(value) == 0 {
 		return nil, false
 	}
-	m.data[key] = value
-	return bytes.Clone(value), true
+	cloneValue := bytes.Clone(value)
+	m.data[key] = cloneValue
+
+	return cloneValue, true
 }
 
 func (m *MemTable) Get(key string) ([]byte, bool) {
@@ -41,13 +43,7 @@ func (m *MemTable) Delete(key string) ([]byte, bool) {
 		return nil, false
 	}
 
-	val, ok := m.Get(key)
-
-	if !ok {
-		return nil, false
-	}
-
-	delete(m.data, key)
+	val, ok := m.Put(key, make([]byte, 0))
 
 	return val, ok
 }
