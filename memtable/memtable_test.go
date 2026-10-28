@@ -46,3 +46,25 @@ func TestDelete(t *testing.T) {
 		t.Fatal("key should exist after reinsertion")
 	}
 }
+
+func TestPutDoesNotExposeMemory(t *testing.T) {
+	m := New()
+
+	original := []byte("Alice")
+
+	returned, ok := m.Put("name", original)
+	if !ok {
+		t.Fatal("Put failed")
+	}
+
+	// Mutate the original slice.
+	original[0] = 'M'
+
+	// Mutate the returned slice.
+	returned[0] = 'B'
+
+	stored, ok := m.Get("name")
+	if !ok || string(stored) != "Alice" {
+		t.Fatalf("stored value was modified: %q", stored)
+	}
+}
